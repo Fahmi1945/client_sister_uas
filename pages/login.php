@@ -10,7 +10,7 @@ Auth::startSession();
 
 // Jika pengguna SUDAH login, lempar dia ke index (yang akan me-redirect ke dashboard)
 if (Auth::isLoggedIn()) {
-    Helper::redirect('index.php');
+    Helper::redirect('client_sister_uas/index.php');
 }
 ?>
 <!DOCTYPE html>
@@ -64,7 +64,7 @@ if (Auth::isLoggedIn()) {
 
             <?php Helper::displayFlashMessage('error'); ?>
 
-            <form action="/proses/auth.php" method="POST">
+            <form action="../proses/auth.php" method="POST">
                 <div class="space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
