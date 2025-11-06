@@ -11,7 +11,7 @@ Auth::startSession();
 
 // Jika pengguna SUDAH login, lempar dia ke index (yang akan me-redirect ke dashboard)
 if (Auth::isLoggedIn()) {
-    Helper::redirect('client_sister_uas/index.php');
+    Helper::redirect('/index.php');
 }
 ?>
 <!DOCTYPE html>
@@ -31,23 +31,23 @@ if (Auth::isLoggedIn()) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script>
-    // Konfigurasi Tailwind yang sama dengan layout
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    'primary': {
-                        'DEFAULT': '#2563EB',
-                        'hover': '#1D4ED8'
+        // Konfigurasi Tailwind yang sama dengan layout
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            'DEFAULT': '#2563EB',
+                            'hover': '#1D4ED8'
+                        },
                     },
-                },
-                fontFamily: {
-                    'poppins': ['Poppins', 'sans-serif'],
-                    'inter': ['Inter', 'sans-serif']
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
                 }
             }
         }
-    }
     </script>
 </head>
 
