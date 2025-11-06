@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Asumsi data user dari API berisi 'id', 'nama', 'email', 'role'
             Auth::setLoginSession($loggedInUser);
             // Redirect ke index, nanti index akan melempar ke dashboard
-            Helper::redirect('client_sister_uas/index.php');
+            Helper::redirect('index.php');
         } else {
             // GAGAL LOGIN
             Helper::setFlashMessage('error', 'Email atau password yang Anda masukkan salah.');
