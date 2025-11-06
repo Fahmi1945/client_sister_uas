@@ -2,6 +2,7 @@
 // client/index.php
 
 // 1. Panggil file inti
+require_once 'config/config.php';
 require_once 'core/Auth.php';
 require_once 'core/Helper.php';
 
@@ -13,7 +14,7 @@ Auth::startSession();
 if (Auth::isLoggedIn()) {
     // Jika sudah login, cek rolenya
     $role = Auth::getRole();
-    
+
     if ($role == 'admin') {
         Helper::redirect('pages/dashboard_admin.php');
     } elseif ($role == 'karyawan') {
