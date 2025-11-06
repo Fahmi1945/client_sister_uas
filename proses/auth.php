@@ -34,14 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // 6. Loop data user untuk mencari yang cocok
+        // 6. Loop data user untuk mencari yang cocok
         $loggedInUser = null;
         if (!empty($users) && is_array($users)) {
             foreach ($users as $user) {
                 // Pastikan kolom email dan password ada
                 if (isset($user['email']) && isset($user['password'])) {
                     
-                    // 7. Logika Pengecekan
-                    // (Ini asumsi password di DB tidak di-hash. Untuk UAS, ini oke)
+                    // 7. Logika Pengecekan (PASTIKAN MENGGUNAKAN '&&')
                     if ($user['email'] == $email && $user['password'] == $password) {
                         $loggedInUser = $user;
                         break; // Ditemukan! Hentikan loop
@@ -51,17 +51,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // 8. Proses Hasil Login
-        if ($loggedInUser) {
-            // BERHASIL LOGIN
+        if ($loggedInUser) { // Jika $loggedInUser tidak null, baru login
             Auth::setLoginSession($loggedInUser);
-            // Redirect ke index.php (nanti index.php yang urus ke dashboard)
             Helper::redirect('index.php');
         } else {
-            // GAGAL LOGIN (Email/password salah)
+            // Jika $loggedInUser masih null, kirim error
             Helper::setFlashMessage('error', 'Email atau password yang Anda masukkan salah.');
             Helper::redirect('pages/login.php');
         }
+        
 
+        
     } catch (Exception $e) {
         // GAGAL KONEKSI (Misal server API mati total)
         Helper::setFlashMessage('error', 'Koneksi ke server gagal: ' . $e->getMessage());

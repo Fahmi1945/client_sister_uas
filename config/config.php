@@ -11,6 +11,6 @@ define('BASE_URL', $protocol . $_SERVER['HTTP_HOST'] . BASE_PROJECT_PATH);
 
 // 3. Definisikan URL API Anda
 // (Ganti 'localhost' jika server Anda ada di IP lain)
-define('API_BASE_URL', 'http://192.168.18.51/uas_sister/server/server.php');
+define('API_BASE_URL', 'http://192.168.18.21/uas_sister/server/server.php');
 
 ?>
