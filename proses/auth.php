@@ -6,6 +6,8 @@ require_once '../core/Client.php';
 require_once '../core/Auth.php';
 require_once '../core/Helper.php';
 
+define('BASE_PROJECT_PATH', '/client_sister_uas/');
+
 // 2. Pastikan ini adalah request POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
