@@ -10,7 +10,7 @@ Auth::startSession();
 
 // Jika pengguna SUDAH login, lempar dia ke index (yang akan me-redirect ke dashboard)
 if (Auth::isLoggedIn()) {
-    Helper::redirect('index.php');
+    Helper::redirect('client_sister_uas/index.php');
 }
 ?>
 <!DOCTYPE html>
