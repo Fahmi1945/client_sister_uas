@@ -1,68 +1,75 @@
 <?php
 // client/proses/auth.php
 
-// 1. Panggil file inti
+// ==========================================================
+// ATURAN EMAS: Muat config.php PERTAMA!
+// ==========================================================
 require_once '../config/config.php';
+// ==========================================================
+
+// Panggil file core lainnya
 require_once '../core/Client.php';
 require_once '../core/Auth.php';
 require_once '../core/Helper.php';
 
-// define('BASE_PROJECT_PATH', '/client_sister_uas/');
-
-// 2. Pastikan ini adalah request POST
+// 1. Pastikan ini adalah request POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // 3. Ambil data dari form
+    
+    // 2. Ambil data dari form login.php
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     try {
-        // 4. Buat objek Client
+        // 3. Buat objek Client
         $client = new Client();
-
-        // 5. (LOGIKA LOGIN) Ambil SEMUA user dari API
-        // Asumsi tabel di server bernama 'users'
+        
+        // 4. Panggil API (Client.php akan memanggil ...?table=users)
         $users = $client->get('users');
+
+        // 5. Cek apakah API mengembalikan error
         if (isset($users['status']) && $users['status'] == 'error') {
-            // Jika API mengembalikan error (misal: koneksi gagal)
-            Helper::setFlashMessage('error', 'Server API tidak merespon: ' . $users['message']);
+            // Misal: "Gagal decode JSON", "Query Gagal", "Koneksi DB Gagal"
+            Helper::setFlashMessage('error', 'Server API Error: ' . $users['message']);
             Helper::redirect('pages/login.php');
         }
-        $loggedInUser = null;
 
-        // 6. Loop semua user untuk mencari yang cocok
+        // 6. Loop data user untuk mencari yang cocok
+        $loggedInUser = null;
         if (!empty($users) && is_array($users)) {
             foreach ($users as $user) {
-                // Asumsi kolomnya 'email' dan 'password'
-                // Ini hanya bekerja jika password di server TIDAK di-hash
-                if ($user['email'] == $email && $user['password'] == $password) {
-                    $loggedInUser = $user;
-                    break; // User ditemukan, hentikan loop
+                // Pastikan kolom email dan password ada
+                if (isset($user['email']) && isset($user['password'])) {
+                    
+                    // 7. Logika Pengecekan
+                    // (Ini asumsi password di DB tidak di-hash. Untuk UAS, ini oke)
+                    if ($user['email'] == $email && $user['password'] == $password) {
+                        $loggedInUser = $user;
+                        break; // Ditemukan! Hentikan loop
+                    }
                 }
             }
         }
 
-        // 7. Proses Hasil
+        // 8. Proses Hasil Login
         if ($loggedInUser) {
             // BERHASIL LOGIN
-            // Asumsi data user dari API berisi 'id', 'nama', 'email', 'role'
             Auth::setLoginSession($loggedInUser);
-            // Redirect ke index, nanti index akan melempar ke dashboard
+            // Redirect ke index.php (nanti index.php yang urus ke dashboard)
             Helper::redirect('index.php');
         } else {
-            // GAGAL LOGIN
+            // GAGAL LOGIN (Email/password salah)
             Helper::setFlashMessage('error', 'Email atau password yang Anda masukkan salah.');
             Helper::redirect('pages/login.php');
         }
 
     } catch (Exception $e) {
-        // Tangani jika koneksi ke API gagal
+        // GAGAL KONEKSI (Misal server API mati total)
         Helper::setFlashMessage('error', 'Koneksi ke server gagal: ' . $e->getMessage());
         Helper::redirect('pages/login.php');
     }
 
 } else {
-    // Jika diakses langsung (bukan POST), tendang kembali
+    // Jika file ini diakses langsung (bukan via POST), tendang kembali
     Helper::redirect('pages/login.php');
 }
 ?>

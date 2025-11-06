@@ -16,7 +16,7 @@ class Helper
     public static function redirect($url)
     {
         // Sekarang file ini otomatis tahu BASE_URL dari Langkah 2
-        $url = ltrim($url, './');
+        $url = ltrim($url, '/');
 
         // Ganti menjadi BASE_URL agar lebih lengkap
         header("Location: " . BASE_URL . "{$url}");

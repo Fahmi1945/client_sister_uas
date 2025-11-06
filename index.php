@@ -1,30 +1,36 @@
 <?php
 // client/index.php
 
-// 1. Panggil file inti
+// ==========================================================
+// ATURAN EMAS: Muat config.php PERTAMA!
+// ==========================================================
 require_once 'config/config.php';
+// ==========================================================
+
+// Sekarang kita bisa memuat file core lain yang bergantung padanya
 require_once 'core/Auth.php';
 require_once 'core/Helper.php';
 
-// define('BASE_PROJECT_PATH', '/client_sister_uas/');
-// 2. Selalu mulai sesi
+// Selalu mulai sesi
 Auth::startSession();
 
-// 3. Logika routing
+// Logika routing
 if (Auth::isLoggedIn()) {
     // Jika sudah login, cek rolenya
     $role = Auth::getRole();
-
+    
     if ($role == 'admin') {
+        // Panggil redirect TANPA slash di depan
         Helper::redirect('pages/dashboard_admin.php');
     } elseif ($role == 'karyawan') {
         Helper::redirect('pages/dashboard_karyawan.php');
     } else {
-        // Role tidak dikenal, fallback ke dashboard admin
+        // Fallback jika role tidak dikenal
         Helper::redirect('pages/dashboard_admin.php');
     }
 } else {
     // 4. Jika belum login, lempar ke halaman login
+    // Panggil redirect TANPA slash di depan
     Helper::redirect('pages/login.php');
 }
 

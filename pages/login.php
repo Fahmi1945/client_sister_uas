@@ -1,8 +1,13 @@
 <?php
 // client/pages/login.php
 
-// Panggil file core untuk sesi dan redirect
+// ==========================================================
+// ATURAN EMAS: Muat config.php PERTAMA!
+// ==========================================================
 require_once '../config/config.php';
+// ==========================================================
+
+// Panggil file core untuk sesi dan redirect
 require_once '../core/Auth.php';
 require_once '../core/Helper.php';
 
@@ -11,7 +16,7 @@ Auth::startSession();
 
 // Jika pengguna SUDAH login, lempar dia ke index (yang akan me-redirect ke dashboard)
 if (Auth::isLoggedIn()) {
-    Helper::redirect('/index.php');
+    Helper::redirect('index.php'); // Panggil tanpa slash
 }
 ?>
 <!DOCTYPE html>
@@ -31,24 +36,26 @@ if (Auth::isLoggedIn()) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script>
-        // Konfigurasi Tailwind yang sama dengan layout
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': {
-                            'DEFAULT': '#2563EB',
-                            'hover': '#1D4ED8'
-                        },
+    // Konfigurasi Tailwind yang sama dengan layout
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'primary': {
+                        'DEFAULT': '#2563EB',
+                        'hover': '#1D4ED8'
                     },
-                    fontFamily: {
-                        'poppins': ['Poppins', 'sans-serif'],
-                        'inter': ['Inter', 'sans-serif']
-                    }
+                },
+                fontFamily: {
+                    'poppins': ['Poppins', 'sans-serif'],
+                    'inter': ['Inter', 'sans-serif']
                 }
             }
         }
+    }
     </script>
+
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 </head>
 
 <body class="bg-gradient-to-br from-blue-50 to-gray-100 font-inter">
@@ -57,7 +64,7 @@ if (Auth::isLoggedIn()) {
 
         <div class="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
 
-            <img src="/assets/img/logo.png" alt="Logo" class="mx-auto h-12 w-auto mb-6">
+            <img src="<?php echo BASE_URL; ?>assets/img/logo.png" alt="Logo" class="mx-auto h-12 w-auto mb-6">
 
             <h2 class="text-2xl font-bold text-center text-gray-900 font-poppins mb-6">
                 Login ke Akun Anda
@@ -65,7 +72,7 @@ if (Auth::isLoggedIn()) {
 
             <?php Helper::displayFlashMessage('error'); ?>
 
-            <form action="../proses/auth.php" method="POST">
+            <form action="<?php echo BASE_URL; ?>proses/auth.php" method="POST">
                 <div class="space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
