@@ -15,6 +15,7 @@ class Helper
      */
     public static function redirect($url)
     {
+        require_once __DIR__ . '/../config/config.php';
         // Hapus '../' jika ada untuk konsistensi
         $url = ltrim($url, './');
 
