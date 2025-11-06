@@ -8,7 +8,7 @@ require_once '../core/Helper.php';
 
 // 2. Pastikan ini adalah request POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
     // 3. Ambil data dari form
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -16,11 +16,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         // 4. Buat objek Client
         $client = new Client();
-        
+
         // 5. (LOGIKA LOGIN) Ambil SEMUA user dari API
         // Asumsi tabel di server bernama 'users'
         $users = $client->get('users');
-
+        if (isset($users['status']) && $users['status'] == 'error') {
+            // Jika API mengembalikan error (misal: koneksi gagal)
+            Helper::setFlashMessage('error', 'Server API tidak merespon: ' . $users['message']);
+            Helper::redirect('pages/login.php');
+        }
         $loggedInUser = null;
 
         // 6. Loop semua user untuk mencari yang cocok
