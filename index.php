@@ -5,6 +5,7 @@
 require_once 'core/Auth.php';
 require_once 'core/Helper.php';
 
+define('BASE_PROJECT_PATH', '/client_sister_uas/');
 // 2. Selalu mulai sesi
 Auth::startSession();
 
