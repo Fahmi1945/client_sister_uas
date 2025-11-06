@@ -4,6 +4,7 @@
 // (File ini akan dipanggil oleh form atau link)
 
 // 1. Panggil Client
+require_once '../config/config.php';
 require_once '../core/Client.php';
 
 // Anda mungkin juga perlu memanggil helper untuk session dan redirect
