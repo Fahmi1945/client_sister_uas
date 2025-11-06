@@ -2,6 +2,7 @@
 // client/proses/auth.php
 
 // 1. Panggil file inti
+require_once '../config/config.php';
 require_once '../core/Client.php';
 require_once '../core/Auth.php';
 require_once '../core/Helper.php';

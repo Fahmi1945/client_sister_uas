@@ -2,6 +2,7 @@
 // client/proses/status.php
 
 // 1. Panggil SEMUA file inti
+require_once '../config/config.php';
 require_once '../core/Client.php';
 require_once '../core/Helper.php';
 require_once '../core/Auth.php';

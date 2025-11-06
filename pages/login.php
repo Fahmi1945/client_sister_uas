@@ -2,6 +2,7 @@
 // client/pages/login.php
 
 // Panggil file core untuk sesi dan redirect
+require_once '../config/config.php';
 require_once '../core/Auth.php';
 require_once '../core/Helper.php';
 

@@ -2,6 +2,7 @@
 // client/layout/header.php
 
 // 1. Selalu panggil file inti di bagian paling atas
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../core/Auth.php';
 require_once __DIR__ . '/../core/Helper.php';
 

@@ -15,13 +15,11 @@ class Helper
      */
     public static function redirect($url)
     {
-        require_once __DIR__ . '/../config/config.php';
-        // Hapus '../' jika ada untuk konsistensi
+        // Sekarang file ini otomatis tahu BASE_URL dari Langkah 2
         $url = ltrim($url, './');
 
-        // Asumsi aplikasi Anda jalan di root domain/folder. 
-        // Jika di dalam subfolder, Anda mungkin perlu atur base URL client.
-        header("Location: " . BASE_PROJECT_PATH . "/{$url}");
+        // Ganti menjadi BASE_URL agar lebih lengkap
+        header("Location: " . BASE_URL . "{$url}");
         exit;
     }
 

@@ -1,14 +1,16 @@
 <?php
 // client/config/config.php
 
-/**
- * URL dasar dari REST API server teman Anda.
- * Ganti IP, port (jika ada), dan path folder sesuai kebutuhan.
- * * PENTING: Pastikan TIDAK ADA tanda slash (/) di akhir URL.
- */
-define('API_BASE_URL', 'http://192.168.18.51/uas_sister/server/server.php');
+// 1. Definisikan path proyek Anda (ini sudah benar)
+define('BASE_PROJECT_PATH', '/client_sister_uas/');
 
-// (Anda bisa menambahkan konstanta lain di sini nanti, 
-// misalnya nama aplikasi, dll.)
+// 2. Buat BASE_URL dinamis (LEBIH BAIK DARI SEBELUMNYA)
+// Ini akan otomatis menggunakan 'localhost' atau '192.168.18.243'
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+define('BASE_URL', $protocol . $_SERVER['HTTP_HOST'] . BASE_PROJECT_PATH);
+
+// 3. Definisikan URL API Anda
+// (Ganti 'localhost' jika server Anda ada di IP lain)
+define('API_BASE_URL', 'http://localhost/uas_sister/server/server.php');
 
 ?>
