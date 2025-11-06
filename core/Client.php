@@ -1,10 +1,12 @@
 <?php
 // client/core/Client.php
 
-class Client {
+class Client
+{
     private $baseUrl;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Ambil URL dasar dari file konfigurasi
         // __DIR__ adalah folder 'core', jadi kita perlu '../'
         require_once __DIR__ . '/../config/config.php';
@@ -18,11 +20,12 @@ class Client {
      * @param array|null $data Data yang akan dikirim (untuk POST/PUT)
      * @return array Hasil data yang sudah di-decode dari JSON
      */
-    private function execute($url, $method = 'GET', $data = null) {
+    private function execute($url, $method = 'GET', $data = null)
+    {
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
         if ($data) {
@@ -35,18 +38,18 @@ class Client {
         }
 
         $response = curl_exec($ch);
-        
+
         if (curl_errno($ch)) {
             $error = curl_error($ch);
             curl_close($ch);
             return ["status" => "error", "message" => "Koneksi Gagal: " . $error];
         }
-        
+
         curl_close($ch);
         $decodedResponse = json_decode($response, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-             return ["status" => "error", "message" => "Gagal decode JSON", "server_response" => $response];
+            return ["status" => "error", "message" => "Gagal decode JSON", "server_response" => $response];
         }
 
         return $decodedResponse;
@@ -54,26 +57,33 @@ class Client {
 
     // --- Metode Publik CRUD ---
 
-    public function get($table, $id = null) {
-        $url = $this->baseUrl . '/' . $table;
+    public function get($table, $id = null)
+    {
+        // PERBAIKAN: Gunakan ?table=...
+        $url = $this->baseUrl . '?table=' . $table;
         if ($id) {
-            $url .= '/' . $id;
+            $url .= '&id=' . $id;
         }
         return $this->execute($url, 'GET');
     }
 
-    public function post($table, $data) {
-        $url = $this->baseUrl . '/' . $table;
+    public function post($table, $data)
+    {
+        // PERBAIKAN: Gunakan ?table=...
+        $url = $this->baseUrl . '?table=' . $table;
         return $this->execute($url, 'POST', $data);
     }
 
-    public function put($table, $id, $data) {
-        $url = $this->baseUrl . '/' . $table . '/' . $id;
+    public function put($table, $id, $data)
+    {
+        // PERBAIKAN: Gunakan ?table=...&id=...
+        $url = $this->baseUrl . '?table=' . $table . '&id=' . $id;
         return $this->execute($url, 'PUT', $data);
     }
 
-    public function delete($table, $id) {
-        $url = $this->baseUrl . '/' . $table . '/' . $id;
+    public function delete($table, $id)
+    {
+        $url = $this->baseUrl . '?table=' . $table . '&id=' . $id;
         return $this->execute($url, 'DELETE');
     }
 }
