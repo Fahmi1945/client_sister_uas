@@ -64,7 +64,7 @@ if (Auth::isLoggedIn()) {
 
             <?php Helper::displayFlashMessage('error'); ?>
 
-            <form action="/proses/auth.php" method="POST">
+            <form action="../proses/auth.php" method="POST">
                 <div class="space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>

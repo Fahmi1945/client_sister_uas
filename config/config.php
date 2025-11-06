@@ -6,7 +6,7 @@
  * Ganti IP, port (jika ada), dan path folder sesuai kebutuhan.
  * * PENTING: Pastikan TIDAK ADA tanda slash (/) di akhir URL.
  */
-define('API_BASE_URL', 'http://192.168.1.10/proyek-api/server.php');
+define('API_BASE_URL', 'http://192.168.18.51/uas_sister/server/server.php');
 
 // (Anda bisa menambahkan konstanta lain di sini nanti, 
 // misalnya nama aplikasi, dll.)
