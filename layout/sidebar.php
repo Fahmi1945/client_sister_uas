@@ -1,43 +1,54 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-$role = $_SESSION['role'] ?? null;
+// client/layout/sidebar.php
+
+// Kita perlu tahu role pengguna untuk menampilkan menu yang tepat
+// Variabel $userRole sudah ada dari header.php, 
+// tapi kita bisa panggil lagi untuk memastikan file ini mandiri
+$userRole = Auth::getRole();
 ?>
-<!-- Sidebar -->
-<aside class="w-64 bg-white shadow-lg hidden md:block">
-    <div class="h-full flex flex-col">
-        <div class="flex items-center justify-center py-6 border-b">
-            <img src="/client/assets/img/logo.png" alt="Logo" class="h-10 w-10 mr-2">
-            <h2 class="text-xl font-bold text-blue-600">Manajemen Tugas</h2>
-        </div>
-        <nav class="flex-1 p-4 space-y-2">
-            <a href="/client/index.php?page=dashboard" class="block py-2 px-4 rounded hover:bg-blue-100 font-medium">
-                🏠 Dashboard
-            </a>
 
-            <?php if ($role === 'admin'): ?>
-            <a href="/client/pages/users/list.php" class="block py-2 px-4 rounded hover:bg-blue-100 font-medium">
-                👥 Manajemen User
-            </a>
-            <a href="/client/pages/departemen/list.php" class="block py-2 px-4 rounded hover:bg-blue-100 font-medium">
-                🏢 Departemen
-            </a>
-            <a href="/client/pages/tugas/list.php" class="block py-2 px-4 rounded hover:bg-blue-100 font-medium">
-                📋 Tugas
-            </a>
-            <?php endif; ?>
+<aside class="w-64 bg-primary text-white flex-shrink-0 flex flex-col">
 
-            <a href="/client/pages/status_tugas/board.php"
-                class="block py-2 px-4 rounded hover:bg-blue-100 font-medium">
-                ✅ Status Tugas
-            </a>
-        </nav>
-
-        <div class="p-4 border-t">
-            <a href="/client/logout.php" class="block text-red-500 hover:text-red-700 font-semibold">
-                🚪 Logout
-            </a>
-        </div>
+    <div class="h-16 flex items-center justify-center px-4 shadow-md">
+        <img src="/assets/img/logo.png" alt="Logo" class="h-8 w-auto mr-3">
+        <span class="text-xl font-poppins font-semibold">Manajemen</span>
     </div>
+
+    <nav class="flex-1 p-4 space-y-2">
+
+        <a href="<?php echo ($userRole == 'admin') ? '/pages/dashboard_admin.php' : '/pages/dashboard_karyawan.php'; ?>"
+            class="flex items-center space-x-4 px-4 py-2 rounded-md hover:bg-primary-hover transition-colors">
+            <i class="bi bi-pie-chart-fill text-lg"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <?php // === MENU KHUSUS ADMIN === ?>
+        <?php if ($userRole == 'admin'): ?>
+        <a href="/pages/users/list.php"
+            class="flex items-center space-x-4 px-4 py-2 rounded-md hover:bg-primary-hover transition-colors">
+            <i class="bi bi-people-fill text-lg"></i>
+            <span>Manajemen User</span>
+        </a>
+        <a href="/pages/departemen/list.php"
+            class="flex items-center space-x-4 px-4 py-2 rounded-md hover:bg-primary-hover transition-colors">
+            <i class="bi bi-building text-lg"></i>
+            <span>Manajemen Departemen</span>
+        </a>
+        <a href="/pages/tugas/list.php"
+            class="flex items-center space-x-4 px-4 py-2 rounded-md hover:bg-primary-hover transition-colors">
+            <i class="bi bi-clipboard-check-fill text-lg"></i>
+            <span>Manajemen Tugas</span>
+        </a>
+        <?php endif; ?>
+
+        <?php // === MENU KHUSUS KARYAWAN === ?>
+        <?php if ($userRole == 'karyawan'): ?>
+        <a href="/pages/status_tugas/board.php"
+            class="flex items-center space-x-4 px-4 py-2 rounded-md hover:bg-primary-hover transition-colors">
+            <i class="bi bi-check2-square text-lg"></i>
+            <span>Status Tugas Saya</span>
+        </a>
+        <?php endif; ?>
+
+    </nav>
 </aside>
