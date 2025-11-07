@@ -6,16 +6,17 @@ $pageTitle = "Dashboard Admin";
 
 // 2. Sertakan Header (otomatis memuat Auth, Helper, dan memulai sesi)
 // Pastikan path-nya benar (dari /pages/ ke /layout/)
-require_once '../../layout/header.php';
+require_once '../layout/header.php';
 
 // 3. Keamanan: Cek apakah user sudah login dan rolenya 'admin'
-Auth::checkLogin('admin'); 
+Auth::checkLogin('admin');
 ?>
 
 <div class="space-y-6">
 
     <h2 class="text-2xl font-bold text-gray-800">Selamat Datang,
-        <?php echo htmlspecialchars($currentUser['nama_lengkap'] ?? 'Admin'); ?>!</h2>
+        <?php echo htmlspecialchars($currentUser['nama_lengkap'] ?? 'Admin'); ?>!
+    </h2>
     <p class="text-gray-600">Ini adalah ringkasan sistem manajemen tugas untuk Administrator.</p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -58,7 +59,7 @@ Auth::checkLogin('admin');
     </div>
 </div>
 
-<?php 
+<?php
 // 4. Sertakan Footer (menutup tag HTML)
-require_once '../layout/footer.php'; 
+require_once '../layout/footer.php';
 ?>

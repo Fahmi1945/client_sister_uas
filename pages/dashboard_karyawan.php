@@ -5,7 +5,7 @@
 $pageTitle = "Dashboard Karyawan"; 
 
 // 2. Panggil Header
-require_once '../../layout/header.php'; 
+require_once '../layout/header.php'; 
 
 // 3. (PENTING) Keamanan: Pastikan 'karyawan' yang login
 Auth::checkLogin('karyawan'); 
