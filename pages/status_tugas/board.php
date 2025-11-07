@@ -23,7 +23,7 @@ $allStatusTugas = $client->get('status_tugas'); // Semua status_tugas
 $userMap = [];
 if (is_array($allUsers) && !isset($allUsers['status'])) {
     foreach ($allUsers as $user) {
-        $userMap[$user['id_user']] = $user['nama_lengkap']; // Menggunakan nama_lengkap
+        $userMap[$user['id_user']] = $user['nama']; // Menggunakan nama_lengkap
     }
 }
 
