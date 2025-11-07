@@ -9,7 +9,7 @@ require_once '../core/Client.php';
 require_once '../core/Helper.php';
 require_once '../core/Auth.php';
 
-// 3. Keamanan: Pastikan sesi dimulai dan hanya Admin yang bisa mengakses file ini
+// 3. Keamanan: Pastikan sesi dimulai dan hanya Admin yang bisa mengakses
 Auth::startSession();
 Auth::checkLogin('admin'); 
 
@@ -21,46 +21,24 @@ $redirectUrl = 'pages/users/list.php'; // Tujuan redirect
 $aksi = $_REQUEST['aksi'] ?? null;
 
 // ==========================================================
-// LOGIKA HAPUS (DELETE)
-// ==========================================================
-if ($aksi == 'hapus') {
-    
-    // Ambil ID dari URL (GET)
-    $id_user = $_GET['id'] ?? null;
-    
-    if (!$id_user) {
-        Helper::setFlashMessage('error', 'ID user tidak ditemukan untuk dihapus.');
-        Helper::redirect($redirectUrl);
-    }
-    
-    // Panggil metode DELETE pada Client
-    $response = $client->delete('users', $id_user); 
-
-    // Proses balasan dari server
-    if (isset($response['status']) && $response['status'] == 'success') {
-        Helper::setFlashMessage('success', 'User berhasil dihapus.');
-    } else {
-        $message = $response['message'] ?? 'Terjadi kesalahan tak terduga saat menghapus.';
-        Helper::setFlashMessage('error', 'Gagal menghapus user: ' . $message);
-    }
-    
-    Helper::redirect($redirectUrl);
-}
-
-// ==========================================================
 // LOGIKA TAMBAH (CREATE / POST)
 // ==========================================================
 if ($aksi == 'tambah') {
     
-    // Ambil data dari FORM (POST)
+    // Ambil data dari FORM (POST) - SEMUA MENGGUNAKAN NAMA KOLOM
     $data = [
-        "username" => $_POST['username'] ?? '',
-        "nama_lengkap" => $_POST['nama_lengkap'] ?? '',
+        // Perubahan: Sekarang mengambil dari $_POST['nama']
+        "nama" => $_POST['nama'] ?? '', 
         "email" => $_POST['email'] ?? '',
-        "password" => $_POST['password'] ?? '', // Server yang harusnya melakukan hashing
+        "password" => $_POST['password'] ?? '', 
         "role" => $_POST['role'] ?? 'karyawan',
-        "departemen" => $_POST['departemen'] ?? ''
+        "id_departemen" => $_POST['id_departemen'] ?? null 
     ];
+    
+    // Hilangkan id_departemen jika null/0 untuk menghindari error tipe data
+    if (empty($data['id_departemen'])) {
+        unset($data['id_departemen']);
+    }
 
     // Panggil metode POST pada Client
     $response = $client->post('users', $data); 
@@ -91,12 +69,17 @@ if ($aksi == 'ubah') {
     
     // Siapkan data yang akan dikirim (tanpa password awal)
     $data = [
-        "username" => $_POST['username'] ?? '',
-        "nama_lengkap" => $_POST['nama_lengkap'] ?? '',
+        // Perubahan: Sekarang mengambil dari $_POST['nama']
+        "nama" => $_POST['nama'] ?? '', 
         "email" => $_POST['email'] ?? '',
         "role" => $_POST['role'] ?? 'karyawan',
-        "departemen" => $_POST['departemen'] ?? ''
+        "id_departemen" => $_POST['id_departemen'] ?? null
     ];
+    
+    // Hilangkan id_departemen jika null/0
+    if (empty($data['id_departemen'])) {
+        unset($data['id_departemen']);
+    }
 
     // Cek apakah password diisi (jika tidak kosong, tambahkan ke payload PUT)
     if (!empty($_POST['password'])) {
@@ -116,6 +99,31 @@ if ($aksi == 'ubah') {
     
     Helper::redirect($redirectUrl);
 }
+
+// ==========================================================
+// LOGIKA HAPUS (DELETE)
+// ==========================================================
+if ($aksi == 'hapus') {
+    
+    $id_user = $_GET['id'] ?? null;
+    
+    if (!$id_user) {
+        Helper::setFlashMessage('error', 'ID user tidak ditemukan untuk dihapus.');
+        Helper::redirect($redirectUrl);
+    }
+    
+    $response = $client->delete('users', $id_user); 
+
+    if (isset($response['status']) && $response['status'] == 'success') {
+        Helper::setFlashMessage('success', 'User berhasil dihapus.');
+    } else {
+        $message = $response['message'] ?? 'Terjadi kesalahan tak terduga saat menghapus.';
+        Helper::setFlashMessage('error', 'Gagal menghapus user: ' . $message);
+    }
+    
+    Helper::redirect($redirectUrl);
+}
+
 
 // ==========================================================
 // LOGIKA DEFAULT (Jika tidak ada aksi)
