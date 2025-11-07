@@ -6,7 +6,7 @@ $pageTitle = "Dashboard Admin";
 
 // 2. Sertakan Header (otomatis memuat Auth, Helper, dan memulai sesi)
 // Pastikan path-nya benar (dari /pages/ ke /layout/)
-require_once '../layout/header.php';
+require_once '../../layout/header.php';
 
 // 3. Keamanan: Cek apakah user sudah login dan rolenya 'admin'
 Auth::checkLogin('admin'); 
