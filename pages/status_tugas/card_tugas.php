@@ -3,8 +3,7 @@
 // Variabel $tugas, $userMap, dan $currentUserId sudah tersedia dari board.php
 
 $tugasId = $tugas['id_tugas'];
-// Pastikan mengambil status yang sudah digabungkan di board.php
-$currentStatus = strtolower($tugas['status_current'] ?? 'belum');
+$currentStatus = strtolower($tugas['status_current'] ?? 'belum'); // Status TERAKHIR yang dicatat
 $catatan = $tugas['catatan'] ?? '';
 $updatedAt = $tugas['updated_at'] ?? '';
 
@@ -43,6 +42,12 @@ if ($currentStatus == 'proses') {
         </div>
     <?php endif; ?>
 
+    <?php if (!empty($updatedAt)): ?>
+        <div class="text-xs text-gray-400 mb-2">
+            <i class="bi bi-clock"></i> Update: <?php echo date('d M Y H:i', strtotime($updatedAt)); ?>
+        </div>
+    <?php endif; ?>
+
     <form method="GET" action="<?php echo BASE_URL; ?>proses/status.php" class="mt-3 pt-2 border-t border-gray-100">
         <input type="hidden" name="aksi" value="ubah">
         <input type="hidden" name="id" value="<?php echo $tugasId; ?>">
@@ -51,7 +56,7 @@ if ($currentStatus == 'proses') {
             <label class="block text-xs font-medium text-gray-700 mb-1">
                 <i class="bi bi-chat-square-dots"></i> Tambah Catatan (Opsional)
             </label>
-            <textarea name="catatan" rows="2" placeholder="Contoh: Sudah selesai 50%, menunggu approval..."
+            <textarea name="catatan" rows="2" placeholder="Catatan ini akan dicatat sebagai log status terbaru..."
                 class="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
         </div>
 
