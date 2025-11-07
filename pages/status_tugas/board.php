@@ -2,10 +2,10 @@
 // client/proses/status.php
 
 // 1. Muat File Inti
-require_once '../../config/config.php';
-require_once '../../core/Client.php';
-require_once '../../core/Helper.php';
-require_once '../../core/Auth.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../core/Auth.php';
+require_once __DIR__ . '/../../core/Helper.php';
+require_once __DIR__ . '/../../core/Client.php';
 
 Auth::startSession();
 // Pastikan hanya karyawan yang bisa mengakses file proses status
