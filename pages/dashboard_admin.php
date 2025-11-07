@@ -1,85 +1,64 @@
 <?php
 // client/pages/dashboard_admin.php
 
-// 1. Set judul halaman (digunakan oleh header.php dan navbar.php)
-$pageTitle = "Dashboard Admin"; 
+// 1. Definisikan Judul Halaman
+$pageTitle = "Dashboard Admin";
 
-// 2. Panggil Header (Ini akan memuat semua layout, config, dan Auth)
-require_once '../layout/header.php'; 
+// 2. Sertakan Header (otomatis memuat Auth, Helper, dan memulai sesi)
+// Pastikan path-nya benar (dari /pages/ ke /layout/)
+require_once '../layout/header.php';
 
-// 3. (PENTING) Keamanan: Pastikan hanya 'admin' yang bisa mengakses
+// 3. Keamanan: Cek apakah user sudah login dan rolenya 'admin'
 Auth::checkLogin('admin'); 
-
-// Data statis untuk ditampilkan di Card:
-$totalUsers = 15;
-$totalDepartemen = 5;
-$totalTugas = 75;
-$tugasSelesai = 45;
-
 ?>
 
-<h1 class="text-3xl font-poppins font-bold text-gray-800 mb-8">
-    Ringkasan Sistem
-</h1>
+<div class="space-y-6">
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <h2 class="text-2xl font-bold text-gray-800">Selamat Datang,
+        <?php echo htmlspecialchars($currentUser['nama_lengkap'] ?? 'Admin'); ?>!</h2>
+    <p class="text-gray-600">Ini adalah ringkasan sistem manajemen tugas untuk Administrator.</p>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4 border-l-4 border-primary">
-        <div class="bg-primary/10 p-3 rounded-full">
-            <i class="bi bi-people-fill text-primary text-2xl"></i>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-primary-light">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total User</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">25</p>
+                </div>
+                <i class="bi bi-people-fill text-4xl text-primary"></i>
+            </div>
         </div>
-        <div>
-            <h3 class="text-gray-500 text-sm font-medium">Total User</h3>
-            <p class="text-3xl font-bold"><?php echo $totalUsers; ?></p>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-primary-light">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total Departemen</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">5</p>
+                </div>
+                <i class="bi bi-building text-4xl text-primary"></i>
+            </div>
         </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-primary-light">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Tugas Belum Selesai</p>
+                    <p class="text-3xl font-bold text-red-600 mt-1">12</p>
+                </div>
+                <i class="bi bi-clock-history text-4xl text-red-500"></i>
+            </div>
+        </div>
+
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4 border-l-4 border-green-500">
-        <div class="bg-green-500/10 p-3 rounded-full">
-            <i class="bi bi-building text-green-500 text-2xl"></i>
-        </div>
-        <div>
-            <h3 class="text-gray-500 text-sm font-medium">Total Departemen</h3>
-            <p class="text-3xl font-bold"><?php echo $totalDepartemen; ?></p>
-        </div>
-    </div>
-
-    <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4 border-l-4 border-yellow-500">
-        <div class="bg-yellow-500/10 p-3 rounded-full">
-            <i class="bi bi-clipboard-check-fill text-yellow-500 text-2xl"></i>
-        </div>
-        <div>
-            <h3 class="text-gray-500 text-sm font-medium">Total Tugas</h3>
-            <p class="text-3xl font-bold"><?php echo $totalTugas; ?></p>
-        </div>
-    </div>
-
-    <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4 border-l-4 border-blue-500">
-        <div class="bg-blue-500/10 p-3 rounded-full">
-            <i class="bi bi-check2-square text-blue-500 text-2xl"></i>
-        </div>
-        <div>
-            <h3 class="text-gray-500 text-sm font-medium">Tugas Selesai</h3>
-            <p class="text-3xl font-bold"><?php echo $tugasSelesai; ?></p>
-        </div>
-    </div>
-</div>
-
-<div class="bg-white p-6 rounded-xl shadow-lg mt-8">
-    <h3 class="text-lg font-semibold mb-4 font-poppins text-gray-800">Progres Tugas Mingguan</h3>
-    <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-
-
-        [Image of a business bar chart]
-
-        <span class="text-gray-500 text-lg">
-            <i class="bi bi-bar-chart-line-fill text-3xl mr-2"></i>
-            Area Placeholder untuk Chart (Perlu JavaScript seperti Chart.js)
-        </span>
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Aktivitas Terbaru</h3>
+        <p class="text-gray-500">Di sini akan tampil log aktivitas atau tugas terbaru yang dikerjakan karyawan.</p>
     </div>
 </div>
 
 <?php 
-// 4. Panggil Footer
+// 4. Sertakan Footer (menutup tag HTML)
 require_once '../layout/footer.php'; 
 ?>
