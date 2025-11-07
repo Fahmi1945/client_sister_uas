@@ -1,14 +1,17 @@
 <?php
 // client/pages/dashboard_karyawan.php
 
-// 1. Set judul halaman
-$pageTitle = "Dashboard Karyawan"; 
+// 1. Load dependencies SEBELUM header
+require_once '../config/config.php';
+require_once '../core/Client.php';
+require_once '../core/Auth.php';
+require_once '../core/Helper.php';
 
-// 2. Panggil Header
-require_once '../layout/header.php'; 
+// 2. Set judul halaman
+$pageTitle = "Dashboard Karyawan";
 
 // 3. (PENTING) Keamanan: Pastikan 'karyawan' yang login
-Auth::checkLogin('karyawan'); 
+Auth::checkLogin('karyawan');
 
 // 4. Ambil data user yang sedang login
 $currentUser = Auth::getUserData();
@@ -18,11 +21,14 @@ $currentUserName = htmlspecialchars($currentUser['nama'] ?? 'Karyawan');
 // 5. Inisialisasi Client untuk ambil data dari API
 $client = new Client();
 
-// 6. Ambil semua status_tugas milik karyawan ini
+// 6. Panggil Header (setelah semua logika)
+require_once '../layout/header.php';
+
+// 7. Ambil semua status_tugas milik karyawan ini
 $allStatusTugas = $client->get('status_tugas');
 $allTugas = $client->get('tugas');
 
-// 7. Buat map tugas untuk akses cepat
+// 8. Buat map tugas untuk akses cepat
 $tugasMap = [];
 if (is_array($allTugas) && !isset($allTugas['status'])) {
     foreach ($allTugas as $tugas) {
@@ -30,7 +36,7 @@ if (is_array($allTugas) && !isset($allTugas['status'])) {
     }
 }
 
-// 8. Filter dan hitung statistik
+// 9. Filter dan hitung statistik
 $tugasBelum = 0;
 $tugasProses = 0;
 $tugasSelesai = 0;
@@ -41,7 +47,7 @@ if (is_array($allStatusTugas) && !isset($allStatusTugas['status'])) {
         // Hanya hitung tugas milik user yang login
         if ($status['id_user'] == $currentUserId) {
             $statusValue = strtolower($status['status'] ?? 'belum');
-            
+
             // Hitung berdasarkan status
             if ($statusValue == 'belum') {
                 $tugasBelum++;
@@ -50,20 +56,20 @@ if (is_array($allStatusTugas) && !isset($allStatusTugas['status'])) {
             } elseif ($statusValue == 'selesai') {
                 $tugasSelesai++;
             }
-            
+
             // Cek deadline untuk reminder (status belum atau proses)
             if (in_array($statusValue, ['belum', 'proses'])) {
                 $idTugas = $status['id_tugas'];
-                
+
                 if (isset($tugasMap[$idTugas])) {
                     $tugas = $tugasMap[$idTugas];
                     $deadline = $tugas['deadline'] ?? null;
-                    
+
                     if ($deadline) {
                         $deadlineTime = strtotime($deadline);
                         $now = time();
                         $selisihHari = floor(($deadlineTime - $now) / (60 * 60 * 24));
-                        
+
                         // Jika deadline kurang dari 3 hari
                         if ($selisihHari <= 3 && $selisihHari >= 0) {
                             $deadlineText = '';
@@ -74,7 +80,7 @@ if (is_array($allStatusTugas) && !isset($allStatusTugas['status'])) {
                             } else {
                                 $deadlineText = $selisihHari . ' hari lagi';
                             }
-                            
+
                             $reminderTugas[] = [
                                 'judul' => $tugas['judul'],
                                 'deadline' => $deadlineText,
@@ -92,7 +98,7 @@ if (is_array($allStatusTugas) && !isset($allStatusTugas['status'])) {
 }
 
 // Urutkan reminder berdasarkan deadline terdekat
-usort($reminderTugas, function($a, $b) {
+usort($reminderTugas, function ($a, $b) {
     return $a['selisih_hari'] <=> $b['selisih_hari'];
 });
 
@@ -165,7 +171,7 @@ $tugasAktif = $tugasBelum + $tugasProses; // Total tugas yang belum selesai
 </div>
 
 <!-- Progress Bar -->
-<?php 
+<?php
 $totalTugas = $tugasAktif + $tugasSelesai;
 $persenSelesai = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 0;
 ?>
@@ -182,7 +188,7 @@ $persenSelesai = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 
         <div class="bg-gradient-to-r from-primary to-blue-600 h-4 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
             style="width: <?php echo $persenSelesai; ?>%">
             <?php if ($persenSelesai > 10): ?>
-            <span class="text-xs text-white font-bold"><?php echo $persenSelesai; ?>%</span>
+                <span class="text-xs text-white font-bold"><?php echo $persenSelesai; ?>%</span>
             <?php endif; ?>
         </div>
     </div>
@@ -209,27 +215,27 @@ $persenSelesai = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 
         <i class="bi bi-bell-fill text-red-500 mr-2 animate-pulse"></i>
         Reminder Deadline Mendekat
         <?php if (count($reminderTugas) > 0): ?>
-        <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            <?php echo count($reminderTugas); ?>
-        </span>
+            <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                <?php echo count($reminderTugas); ?>
+            </span>
         <?php endif; ?>
     </h3>
 
     <div class="space-y-3">
         <?php if (empty($reminderTugas)): ?>
-        <div class="text-center py-8">
-            <i class="bi bi-check-circle text-6xl text-green-500 mb-2"></i>
-            <p class="text-gray-500 font-medium">Tidak ada tugas dengan deadline mendesak</p>
-            <p class="text-sm text-gray-400 mt-1">Semua tugas Anda terkendali dengan baik!</p>
-        </div>
+            <div class="text-center py-8">
+                <i class="bi bi-check-circle text-6xl text-green-500 mb-2"></i>
+                <p class="text-gray-500 font-medium">Tidak ada tugas dengan deadline mendesak</p>
+                <p class="text-sm text-gray-400 mt-1">Semua tugas Anda terkendali dengan baik!</p>
+            </div>
         <?php else: ?>
-        <?php foreach ($reminderTugas as $tugas): ?>
-        <?php 
+            <?php foreach ($reminderTugas as $tugas): ?>
+                <?php
                 // Tentukan warna berdasarkan urgency
                 $bgColor = 'bg-yellow-50 border-yellow-200';
                 $textColor = 'text-yellow-800';
                 $badgeColor = 'bg-yellow-500';
-                
+
                 if ($tugas['selisih_hari'] == 0) {
                     $bgColor = 'bg-red-50 border-red-300';
                     $textColor = 'text-red-800';
@@ -239,46 +245,46 @@ $persenSelesai = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 
                     $textColor = 'text-orange-800';
                     $badgeColor = 'bg-orange-500';
                 }
-                
+
                 $statusBadge = strtoupper($tugas['status']);
                 $statusIcon = $tugas['status'] == 'proses' ? 'bi-play-circle-fill' : 'bi-clock-history';
                 ?>
-        <div class="p-4 <?php echo $bgColor; ?> border rounded-lg hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start gap-4">
-                <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-2">
-                        <h4 class="font-bold <?php echo $textColor; ?>">
-                            <?php echo htmlspecialchars($tugas['judul']); ?>
-                        </h4>
-                        <span class="text-xs font-medium px-2 py-1 rounded <?php echo $badgeColor; ?> text-white">
-                            <i class="bi <?php echo $statusIcon; ?>"></i> <?php echo $statusBadge; ?>
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-4 text-xs text-gray-600">
-                        <span>
-                            <i class="bi bi-calendar-event"></i>
-                            <?php echo date('d M Y', strtotime($tugas['deadline_raw'])); ?>
-                        </span>
+                <div class="p-4 <?php echo $bgColor; ?> border rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h4 class="font-bold <?php echo $textColor; ?>">
+                                    <?php echo htmlspecialchars($tugas['judul']); ?>
+                                </h4>
+                                <span class="text-xs font-medium px-2 py-1 rounded <?php echo $badgeColor; ?> text-white">
+                                    <i class="bi <?php echo $statusIcon; ?>"></i> <?php echo $statusBadge; ?>
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs text-gray-600">
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    <?php echo date('d M Y', strtotime($tugas['deadline_raw'])); ?>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm font-bold <?php echo $textColor; ?> whitespace-nowrap">
+                                <i class="bi bi-alarm"></i>
+                                <?php echo htmlspecialchars($tugas['deadline']); ?>
+                            </span>
+                            <a href="<?php echo BASE_URL; ?>pages/status_tugas/board.php"
+                                class="block mt-2 text-xs text-primary hover:underline">
+                                Lihat Detail →
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="text-right">
-                    <span class="text-sm font-bold <?php echo $textColor; ?> whitespace-nowrap">
-                        <i class="bi bi-alarm"></i>
-                        <?php echo htmlspecialchars($tugas['deadline']); ?>
-                    </span>
-                    <a href="<?php echo BASE_URL; ?>pages/status_tugas/board.php"
-                        class="block mt-2 text-xs text-primary hover:underline">
-                        Lihat Detail →
-                    </a>
-                </div>
-            </div>
-        </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
         <?php endif; ?>
     </div>
 </div>
 
-<?php 
+<?php
 // 4. Panggil Footer
-require_once '../layout/footer.php'; 
+require_once '../layout/footer.php';
 ?>
