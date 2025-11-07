@@ -78,14 +78,5 @@ $userRole = Auth::getRole();
 
                 <?php Helper::displayFlashMessage('success'); ?>
                 <?php Helper::displayFlashMessage('error'); ?>
-                <?php
-?>
-            </main>
 
-        </div>
-    </div>
-    <script src="<?php echo BASE_URL; ?>assets/js/script.js"></script>
-
-</body>
-
-</html>
+                <!-- Konten halaman akan dimasukkan di sini -->
