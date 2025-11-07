@@ -11,22 +11,25 @@ Auth::startSession();
 Auth::checkLogin('karyawan'); // HANYA karyawan yang bisa mengubah status
 
 $client = new Client();
-$redirectUrl = 'pages/status_tugas/board.php'; 
+$redirectUrl = 'pages/status_tugas/board.php';
 $aksi = $_REQUEST['aksi'] ?? null;
 
 if ($aksi == 'ubah') {
-    
+
     $id_tugas = $_GET['id'] ?? null;
     $new_status = strtolower($_GET['status'] ?? ''); // Ambil status baru (belum, proses, selesai)
     $currentUserId = Auth::getUserData()['id_user'] ?? 0;
-    $catatan = $_GET['catatan'] ?? 'Status diubah oleh karyawan melalui papan tugas.';
+
+    // Ambil catatan dari input user, jika kosong gunakan default
+    $catatanUser = trim($_GET['catatan'] ?? '');
+    $catatan = !empty($catatanUser) ? $catatanUser : 'Status diubah menjadi ' . strtoupper($new_status) . ' oleh karyawan.';
 
     // Validasi input
     if (!$id_tugas || !in_array($new_status, ['belum', 'proses', 'selesai'])) {
         Helper::setFlashMessage('error', 'Aksi atau ID tugas tidak valid.');
         Helper::redirect($redirectUrl);
     }
-    
+
     // 1. Cek apakah tugas ini ada dan apakah user berhak mengaksesnya
     $responseTugas = $client->get('tugas', $id_tugas);
     $tugasData = $responseTugas[0] ?? null;
@@ -59,16 +62,16 @@ if ($aksi == 'ubah') {
     if ($existingStatus) {
         // 3A. UPDATE record yang sudah ada di status_tugas
         $id_status = $existingStatus['id_status'];
-        
+
         $updatePayload = [
             'status' => $new_status,
             'catatan' => $catatan
             // updated_at akan otomatis terupdate (ON UPDATE CURRENT_TIMESTAMP)
         ];
-        
+
         $response = $client->put('status_tugas', $id_status, $updatePayload);
         $successMessage = 'Status tugas berhasil diubah menjadi: ' . strtoupper($new_status);
-        
+
     } else {
         // 3B. INSERT record baru di status_tugas (jika belum ada)
         $insertPayload = [
@@ -77,7 +80,7 @@ if ($aksi == 'ubah') {
             'status' => $new_status,
             'catatan' => $catatan
         ];
-        
+
         $response = $client->post('status_tugas', $insertPayload);
         $successMessage = 'Status tugas berhasil dibuat: ' . strtoupper($new_status);
     }
@@ -89,9 +92,9 @@ if ($aksi == 'ubah') {
         $message = $response['message'] ?? 'Gagal memperbarui status tugas.';
         Helper::setFlashMessage('error', 'Gagal: ' . $message);
     }
-    
+
     Helper::redirect($redirectUrl);
-    
+
 } else {
     Helper::setFlashMessage('error', 'Aksi tidak valid.');
     Helper::redirect($redirectUrl);
