@@ -58,7 +58,7 @@ if (is_array($allTugas) && !isset($allTugas['status'])) {
         $tugas['updated_at'] = $statusMap[$tugas['id_tugas']]['updated_at'] ?? '';
 
         // Hanya tampilkan tugas yang ditujukan untuk user saat ini
-        if ($tugas['id_user_penerima'] == $currentUserId) {
+        if ($tugas['id_user'] == $currentUserId) {
             $status = strtolower($tugas['status_current']);
             if ($status == 'proses') {
                 $tugasProses[] = $tugas;
